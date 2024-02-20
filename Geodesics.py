@@ -1,5 +1,6 @@
 import math as mt
 import cmath as cmt
+import numpy as np
 
 class Geodesics:
     """
@@ -49,7 +50,10 @@ class Geodesics:
         if (isOuter and isBetween):
             return -1
         else:
-            return 1 
+            return 1
+        
+    def vect_inside(self):
+        return np.vectorize(self.isInside)
 
     def generateEndpoints(self):
         a = 2*self.center.real
