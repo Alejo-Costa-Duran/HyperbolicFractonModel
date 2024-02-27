@@ -7,6 +7,10 @@ import numpy as np
 import more_itertools as mit
 
 class FractonModel:
+    """
+        Hyperbolic Fracton Model class.
+        Holds the hyperbolic lattice, bulk spins, border spins, list of geodesic, center of polygons, and interactions.
+    """
     def __init__(self, p: int, q: int, nlayers : int,kernel = None):
         if((p-2)*(q-2)<=4):
             raise ValueError
@@ -27,20 +31,34 @@ class FractonModel:
             self.interactions = self.getInteractionMatrix()
 
     def getBorderCorrelations(self):
+        """
+            Outputs the correlation of border spins, averaged over the whole border.
+            Output: numpy array of len(border)/2 elements
+        """
         borderSpins = self.spins[self.border]
         return np.sum(borderSpins[self.borderNeigh]*borderSpins[:,None],axis = 0)
     
     def getBorderCorrelationsEachSpin(self):
+        """
+            Outputs the correlation of border spins for each spin
+            Output: numpy array of (len(border), len(border)/2) elements
+        """
         borderSpins = self.spins[self.border]
         return borderSpins[self.borderNeigh]*borderSpins[:,None]
 
     def decorrelate(self,nDecorr : int):
+        """
+            Chooses a side of a geodesic and flips those spins nDecorr times.
+        """
         for step in range(nDecorr):
             geod = np.random.choice(self.geodesicList)
             inner = np.random.randint(2)*2-1
             self.spins = self.spins*inner*geod.vect_inside()(self.centers)
 
     def hamiltonian(self):
+        """
+            Returns the energy of the spin configuration
+        """
         ener = 0
         for inter in self.interactions:
             prod = 1
@@ -50,6 +68,9 @@ class FractonModel:
         return -ener
     
     def getInteractionMatrix(self):
+        """
+            Returns the interaction matrix used to calculate the energy
+        """
         nPol = len(self.lattice)
         vertex_list = []
         int_list = []
@@ -68,6 +89,9 @@ class FractonModel:
         return int_list
 
     def getGeodesics(self):
+        """
+            Returns a list of all the polygon geodesics in the system
+        """
         geodesic_list = []
         for pol_index in self.bulk:
             for vertex in range(self.lattice.p): 
@@ -83,6 +107,14 @@ class FractonModel:
 
 
     def quick_plot(self, unitcircle=False, fig = None, ax = None,dpi=150,colors = None):
+        """
+            Quick plot of the lattice.
+            Unitcircle: Shows the unitcircle, default false.
+            Fig: If provided, plots on the given fig, otherwise it creates one. Default None
+            Ax: if provided uses the given axis, else it creates one. Default None
+            Dpi of the image, default 150
+            colors: List of colors to each polygon, if None sets all to white. If "spins" uses the configuration, coloring up in blue and down in red.
+        """
         if colors == None:
             colors = ['w' for _ in range(len(self.lattice))]
         if len(colors) == 1:

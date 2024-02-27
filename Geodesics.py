@@ -4,10 +4,7 @@ import numpy as np
 
 class Geodesics:
     """
-    Geodesics class. Wrapper to hold geodesics parameters on a hyperbolic lattice.
-    Mainly holds endpoints of the geodesics, aperture angle from the origin.
-    Possibly polygons on each side.
-    Has a function to check if two geodesics are equal.
+    Geodesics class. Wrapper to hold the parameters of the polygon geodesics on a hyperbolic lattice.
     """
     def __init__(self,z1: complex,z2: complex):
         self.center = self.computeCenter(z1,z2)
@@ -17,12 +14,19 @@ class Geodesics:
 
 
     def computeCenter(self,z1: complex,z2: complex):
+        """
+            Input: z1,z2 complex numbers.
+            Output: Center of the geodesic that passes through z1 and z2.
+        """
         a = (z1.imag*(abs(z2)**2+1)-z2.imag*(abs(z1)**2+1))/(z1.real*z2.imag-z2.real*z1.imag)
         b = (z2.real*(abs(z1)**2+1)-z1.real*(abs(z2)**2+1))/(z1.real*z2.imag-z2.real*z1.imag)
         return a/2+1j*b/2
         
     
     def computeDistance(self):
+        """
+            Output: Euclidean distance from the origin to the geodesic in the Poincare disk.
+        """
         a = 2*self.center.real
         b = 2*self.center.imag
         if b==0:
@@ -38,6 +42,10 @@ class Geodesics:
             return min(mt.sqrt(x0*x0+y0*y0),mt.sqrt(x1*x1+y1*y1))
 
     def isInside(self,z0: complex) -> bool:
+        """
+            Input: z0, complex number in the Poincaré Disk, not in the geodesic.
+            Output: Returns 1 if z0 is on one side of the geodesic, -1 if its on the other side.
+        """
         z1 = self.endpoints[0]
         z2 = self.endpoints[1]
         cross10 = z1.real*z0.imag-z0.real*z1.imag
@@ -52,9 +60,15 @@ class Geodesics:
             return 1
         
     def vect_inside(self):
+        """
+            Vectorizes the isInside function
+        """
         return np.vectorize(self.isInside)
 
     def generateEndpoints(self):
+        """
+            Output: Points where the geodesic crosses the unit circle.
+        """
         a = 2*self.center.real
         b = 2*self.center.imag
         if a == 0:
@@ -75,4 +89,7 @@ class Geodesics:
             return [x0+y0*1j,x01+y01*1j]
 
     def __eq__(self, other):
+        """
+            Checks if two geodesics are equal
+        """
         return cmt.isclose(self.center,other.center) and cmt.isclose(self.radius,other.radius)
