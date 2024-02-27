@@ -29,6 +29,10 @@ class FractonModel:
     def getBorderCorrelations(self):
         borderSpins = self.spins[self.border]
         return np.sum(borderSpins[self.borderNeigh]*borderSpins[:,None],axis = 0)
+    
+    def getBorderCorrelationsEachSpin(self):
+        borderSpins = self.spins[self.border]
+        return borderSpins[self.borderNeigh]*borderSpins[:,None]
 
     def hamiltonian(self):
         ener = 0
