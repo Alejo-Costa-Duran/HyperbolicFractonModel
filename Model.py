@@ -86,9 +86,9 @@ class FractonModel:
             colors = []
             for index in range(len(self.lattice)):
                 if self.spins[index] == 1:
-                    colors.append('b')
+                    colors.append('paleturquoise')
                 elif self.spins[index] == -1:
-                    colors.append('r')
+                    colors.append('crimson')
                 else:
                     colors.append('w')
         # actual plot

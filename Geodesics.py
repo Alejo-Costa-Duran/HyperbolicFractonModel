@@ -46,7 +46,6 @@ class Geodesics:
         cross21 = -z1.real*z2.imag+z2.real*z1.imag
         isBetween = (cross10*cross12) >= 0 and (cross20*cross21) >= 0
         isOuter = abs(z0) > self.distanceToOrigin 
-        #print("Is between: ", isBetween, "Is Outer: ", isOuter, "Abs z0: ", abs(z0), "Distance to Origin :", self.distanceToOrigin)
         if (isOuter and isBetween):
             return -1
         else:
