@@ -34,6 +34,12 @@ class FractonModel:
         borderSpins = self.spins[self.border]
         return borderSpins[self.borderNeigh]*borderSpins[:,None]
 
+    def decorrelate(self,nDecorr : int):
+        for step in range(nDecorr):
+            geod = np.random.choice(self.geodesicList)
+            inner = np.random.randint(2)*2-1
+            self.spins = self.spins*inner*geod.vect_inside()(self.centers)
+
     def hamiltonian(self):
         ener = 0
         for inter in self.interactions:
