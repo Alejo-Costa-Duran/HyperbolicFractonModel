@@ -35,8 +35,8 @@ class FractonModel:
             Outputs the correlation of border spins, averaged over the whole border.
             Output: numpy array of len(border)/2 elements
         """
-        borderSpins = self.spins[self.border]
-        return np.sum(borderSpins[self.borderNeigh]*borderSpins[:,None],axis = 0)
+        eArray = self.spins[self.border]*self.spins[self.border][np.array(self.borderNeigh)[:,0]]
+        return np.sum(eArray[self.borderNeigh]*eArray[:,None],axis = 0)
     
     def getBorderCorrelationsEachSpin(self):
         """
