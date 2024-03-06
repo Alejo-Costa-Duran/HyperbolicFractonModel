@@ -17,19 +17,22 @@ class FractonModel:
         else:
             if kernel == None:
                 self.lattice = ht.HyperbolicTiling(p,q,nlayers)
+                self.bulk = [index for index in range(len(self.lattice)) if self.lattice.get_layer(index) !=nlayers]
+                self.border = [index for index in range(len(self.lattice)) if self.lattice.get_layer(index) ==nlayers]    
             else:
                 self.lattice = ht.HyperbolicTiling(p,q,nlayers, kernel = kernel)
-            self.bulk = [index for index in range(len(self.lattice)) if self.lattice.get_layer(index) !=nlayers]
-            self.border = [index for index in range(len(self.lattice)) if self.lattice.get_layer(index) ==nlayers]
+                self.bulk = [index for index in range(len(self.lattice)) if self.lattice.get_layer(index) !=(nlayers-1)]
+                self.border = [index for index in range(len(self.lattice)) if self.lattice.get_layer(index) ==(nlayers-1)]
             self.borderPhases = [cmt.phase(self.lattice.get_center(i)) for i in self.border]
             self.borderPhases, self.border = mit.sort_together([self.borderPhases, self.border])
             self.border = list(self.border)
             self.geodesicList = self.getGeodesics()
             self.spins = np.array([1 for _ in range(len(self.lattice))])
-            self.borderNeigh = [[(idx +j)%len(self.border) for j in range(1,int(len(self.border)/2)+1)] for idx in range(len(self.border))]
+            indices = np.arange(len(self.border))
+            self.borderNeigh = (indices[:,None] + np.arange(1,int(len(self.border)/2)+1))%len(self.border)
             self.centers = np.array([self.lattice.get_center(idx) for idx in range(len(self.lattice))])
             self.interactions = self.getInteractionMatrix()
-
+        
     def getBorderCorrelations(self):
         """
             Outputs the correlation of border spins, averaged over the whole border.
@@ -71,16 +74,16 @@ class FractonModel:
         """
             Returns the interaction matrix used to calculate the energy
         """
-        nPol = len(self.lattice)
         vertex_list = []
         int_list = []
         for pol in self.bulk:
             vertices = self.lattice.get_vertices(pol)
+            nbrs = self.lattice.get_nbrs(pol)
             for i in range(len(vertices)):
                 if vertices[i] not in vertex_list:
                     vertex_list.append(vertices[i])
                     temp = []
-                    for pol1 in range(nPol):
+                    for pol1 in range(len(self.lattice)):
                         vertices1 = self.lattice.get_vertices(pol1)
                         for v in vertices1:
                             if cmt.isclose(v,vertices[i]):
@@ -93,7 +96,7 @@ class FractonModel:
             Returns a list of all the polygon geodesics in the system
         """
         geodesic_list = []
-        for pol_index in self.bulk:
+        for idx,pol_index in enumerate(self.bulk):
             for vertex in range(self.lattice.p): 
                 g_new = gd.Geodesics(self.lattice.get_vertices(pol_index)[vertex],self.lattice.get_vertices(pol_index)[(vertex+1)%self.lattice.p])
                 add = True

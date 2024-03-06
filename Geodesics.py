@@ -92,4 +92,4 @@ class Geodesics:
         """
             Checks if two geodesics are equal
         """
-        return cmt.isclose(self.center,other.center) and cmt.isclose(self.radius,other.radius)
+        return np.abs(self.center-other.center) < 0.0000001
