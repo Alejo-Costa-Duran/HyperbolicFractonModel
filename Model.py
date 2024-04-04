@@ -31,7 +31,7 @@ class FractonModel:
             indices = np.arange(len(self.border))
             self.borderNeigh = (indices[:,None] + np.arange(1,int(len(self.border)/2)+1))%len(self.border)
             self.centers = np.array([self.lattice.get_center(idx) for idx in range(len(self.lattice))])
-            self.interactions = self.getInteractionMatrix()
+            self.interactions, self.linksList = self.getInteractionMatrix()
         
     def getBorderCorrelations(self):
         """
@@ -80,7 +80,11 @@ class FractonModel:
             vertices = self.lattice.get_vertices(pol)
             nbrs = self.lattice.get_nbrs(pol)
             for i in range(len(vertices)):
-                if vertices[i] not in vertex_list:
+                add = True
+                for vert in vertex_list:
+                    if cmt.isclose(vert,vertices[i]):
+                        add = False
+                if add:
                     vertex_list.append(vertices[i])
                     temp = []
                     for pol1 in range(len(self.lattice)):
@@ -89,7 +93,14 @@ class FractonModel:
                             if cmt.isclose(v,vertices[i]):
                                 temp.append(pol1)
                     int_list.append(temp)
-        return int_list
+        linksList = []
+        for n in range(len(self.lattice)):
+            links = []
+            for l in range(len(int_list)):
+                if n in int_list[l]:
+                    links.append(l)
+            linksList.append(links)
+        return int_list, linksList
 
     def getGeodesics(self):
         """
