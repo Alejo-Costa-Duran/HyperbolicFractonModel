@@ -31,7 +31,7 @@ class FractonModel:
             indices = np.arange(len(self.border))
             self.borderNeigh = (indices[:,None] + np.arange(1,int(len(self.border)/2)+1))%len(self.border)
             self.centers = np.array([self.lattice.get_center(idx) for idx in range(len(self.lattice))])
-            self.interactions, self.linksList = self.getInteractionMatrix()
+            #self.interactions, self.linksList = self.getInteractionMatrix()
         
     def getBorderCorrelations(self):
         """
