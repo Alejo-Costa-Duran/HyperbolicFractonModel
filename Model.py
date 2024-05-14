@@ -145,7 +145,7 @@ class FractonModel:
                     colors.append('w')
         # actual plot
         if fig == None and ax==None:
-            fig, ax = plt.subplots(figsize=(8, 7), dpi=dpi)
+            fig, ax = plt.subplots(figsize=(6,5), dpi=dpi)
             plt.xlim([-1, 1])
             plt.ylim([-1, 1])
             plt.axis('equal')
