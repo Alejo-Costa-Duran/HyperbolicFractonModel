@@ -2,3 +2,4 @@ Program to explore the ground states of the hyperbolic fracton model defined [he
 
 - File *Geodesics.py*: Introduces Geodesics class for defining geodesics polygon geodesics in a Hyperbolic {p,4}  Lattice.
 - File *model.py*: Introduces FractonModel class for Hyperbolic Fracton models defined on a Hyperbolic {p,4} Lattice.
+- File *Functions.py*: Defines some helper functions
